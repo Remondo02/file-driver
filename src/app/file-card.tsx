@@ -8,12 +8,80 @@ import {
 } from "@/components/ui/card"
 import { Doc } from "../../convex/_generated/dataModel.js"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { DeleteIcon, MoreVertical, TrashIcon } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useState } from "react"
 
-export function FileCard({file}: {file: Doc<"files">}) {
+function FileCardAction() {
+  const [isConfirmeOpen, setIsConfirmeOpen] = useState(false)
+  return (
+    <>
+      <AlertDialog open={isConfirmeOpen} onOpenChange={setIsConfirmeOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                //Delete file
+              }}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <MoreVertical />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() => setIsConfirmeOpen(true)}
+            className="flex gap-1 text-red-500 items-center cursor-pointer"
+          >
+            <TrashIcon className="w-4 h-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  )
+}
+
+export function FileCard({ file }: { file: Doc<"files"> }) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="relative">
         <CardTitle>{file.name}</CardTitle>
+        <div className="absolute top-2 right-2">
+          <FileCardAction />
+        </div>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
       <CardContent>
