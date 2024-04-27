@@ -28,6 +28,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
+import { Loader2 } from "lucide-react"
 
 const formSchema = z.object({
   title: z.string().min(2).max(150),
@@ -150,7 +151,16 @@ export default function Home() {
                         </FormItem>
                       )}
                     />
-                    <Button type="submit">Submit</Button>
+                    <Button
+                      type="submit"
+                      disabled={form.formState.isSubmitting}
+                      className="flex gap-1"
+                    >
+                      {form.formState.isSubmitting && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                      Submit
+                    </Button>
                   </form>
                 </Form>
               </DialogDescription>
