@@ -12,11 +12,9 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DeleteIcon, MoreVertical, TrashIcon } from "lucide-react"
+import { MoreVertical, TrashIcon } from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,11 +24,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useState } from "react"
+import { useMutation } from "convex/react"
+import { api } from "../../convex/_generated/api.js"
+import { useToast } from "@/components/ui/use-toast"
 
-function FileCardAction() {
+function FileCardActions({ file }: { file: Doc<"files"> }) {
+  const deleteFile = useMutation(api.files.deleteFile)
+  const { toast } = useToast()
   const [isConfirmeOpen, setIsConfirmeOpen] = useState(false)
   return (
     <>
@@ -46,8 +48,13 @@ function FileCardAction() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                //Delete file
+              onClick={async () => {
+                await deleteFile({ fileId: file._id })
+                toast({
+                  variant: "default",
+                  title: "File deleted",
+                  description: "Your file is now gone from the system",
+                })
               }}
             >
               Continue
@@ -80,7 +87,7 @@ export function FileCard({ file }: { file: Doc<"files"> }) {
       <CardHeader className="relative">
         <CardTitle>{file.name}</CardTitle>
         <div className="absolute top-2 right-2">
-          <FileCardAction />
+          <FileCardActions file={file} />
         </div>
         {/* <CardDescription>Card Description</CardDescription> */}
       </CardHeader>
