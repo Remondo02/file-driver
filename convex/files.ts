@@ -26,7 +26,12 @@ async function hasAccessToOrg(
 }
 
 export const createFile = mutation({
-  args: { name: v.string(), fileId: v.id("_storage"), orgId: v.string(), type: fileTypes },
+  args: {
+    name: v.string(),
+    fileId: v.id("_storage"),
+    orgId: v.string(),
+    type: fileTypes,
+  },
   async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity()
 
@@ -48,7 +53,7 @@ export const createFile = mutation({
       name: args.name,
       orgId: args.orgId,
       fileId: args.fileId,
-      type: args.type
+      type: args.type,
     })
   },
 })
@@ -56,6 +61,7 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     orgId: v.string(),
+    query: v.optional(v.string()),
   },
   async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity()
@@ -74,10 +80,20 @@ export const getFiles = query({
       return []
     }
 
-    return ctx.db
+    const files = await ctx.db
       .query("files")
       .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
       .collect()
+
+    const query = args.query
+
+    if (query) {
+      return files.filter((file) =>
+        file.name.toLowerCase().includes(query.toLowerCase())
+      )
+    } else {
+      return files
+    }
   },
 })
 
