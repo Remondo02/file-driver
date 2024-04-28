@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { useOrganization, useUser } from "@clerk/nextjs"
 import { useMutation } from "convex/react"
-import { api } from "../../convex/_generated/api"
+import { api } from "../../../../convex/_generated/api"
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { Loader2 } from "lucide-react"
-import { Doc } from "../../convex/_generated/dataModel.js"
+import { Doc } from "../../../../convex/_generated/dataModel.js"
 
 const formSchema = z.object({
   title: z.string().min(2).max(150),

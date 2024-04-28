@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Doc, Id } from "../../convex/_generated/dataModel.js"
+import { Doc, Id } from "../../../../convex/_generated/dataModel.js"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { ReactNode, useState } from "react"
 import { useMutation } from "convex/react"
-import { api } from "../../convex/_generated/api.js"
+import { api } from "../../../../convex/_generated/api.js"
 import { useToast } from "@/components/ui/use-toast"
 import Image from "next/image.js"
 
