@@ -11,6 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -18,6 +19,7 @@ import {
   GanttChartIcon,
   ImageIcon,
   MoreVertical,
+  StarIcon,
   TrashIcon,
 } from "lucide-react"
 import {
@@ -38,6 +40,7 @@ import Image from "next/image.js"
 
 function FileCardActions({ file }: { file: Doc<"files"> }) {
   const deleteFile = useMutation(api.files.deleteFile)
+  const toggleFavorite = useMutation(api.files.toggleFavorite)
   const { toast } = useToast()
   const [isConfirmeOpen, setIsConfirmeOpen] = useState(false)
   return (
@@ -74,6 +77,16 @@ function FileCardActions({ file }: { file: Doc<"files"> }) {
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() => {
+              toggleFavorite({ fileId: file._id })
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <StarIcon className="w-4 h-4" />
+            Favorite
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setIsConfirmeOpen(true)}
             className="flex gap-1 text-red-500 items-center cursor-pointer"
@@ -122,9 +135,13 @@ export function FileCard({ file }: { file: Doc<"files"> }) {
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button onClick={() => {
-          window.open(getFileUrl(file.fileId), "_blank")
-        }}>Download</Button>
+        <Button
+          onClick={() => {
+            window.open(getFileUrl(file.fileId), "_blank")
+          }}
+        >
+          Download
+        </Button>
       </CardFooter>
     </Card>
   )
