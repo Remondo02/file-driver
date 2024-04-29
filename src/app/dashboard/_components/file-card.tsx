@@ -22,6 +22,7 @@ import {
   StarHalf,
   StarIcon,
   TrashIcon,
+  UndoIcon,
 } from "lucide-react"
 import {
   AlertDialog,
@@ -48,6 +49,7 @@ function FileCardActions({
   isFavorited: boolean
 }) {
   const deleteFile = useMutation(api.files.deleteFile)
+  const restoreFile = useMutation(api.files.restoreFile)
   const toggleFavorite = useMutation(api.files.toggleFavorite)
   const { toast } = useToast()
   const [isConfirmeOpen, setIsConfirmeOpen] = useState(false)
@@ -58,7 +60,8 @@ function FileCardActions({
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action will mark the file for our deletion process. Files are deleted periodically.
+              This action will mark the file for our deletion process. Files are
+              deleted periodically.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -100,16 +103,31 @@ function FileCardActions({
               </div>
             )}
           </DropdownMenuItem>
-          {/* <Protect role="org:admin" fallback={<></>}> */}
+          <Protect role="org:admin" fallback={<></>}>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => setIsConfirmeOpen(true)}
-              className="flex gap-1 text-red-500 items-center cursor-pointer"
+              onClick={() => {
+                if (file.shouldDelete) {
+                  restoreFile({
+                    fileId: file._id,
+                  })
+                } else {
+                  setIsConfirmeOpen(true)
+                }
+              }}
+              className="flex gap-1 items-center cursor-pointer"
             >
-              <TrashIcon className="w-4 h-4" />
-              Delete
+              {file.shouldDelete ? (
+                <div className="flex gap-1 text-green-500 items-center cursor-pointer">
+                  <UndoIcon className="w-4 h-4" /> Restore
+                </div>
+              ) : (
+                <div className="flex gap-1 text-red-500 items-center cursor-pointer">
+                  <TrashIcon className="w-4 h-4" /> Delete
+                </div>
+              )}
             </DropdownMenuItem>
-          {/* </Protect> */}
+          </Protect>
         </DropdownMenuContent>
       </DropdownMenu>
     </>
