@@ -69,6 +69,7 @@ export const getFiles = query({
     orgId: v.string(),
     query: v.optional(v.string()),
     favorites: v.optional(v.boolean()),
+    deletedOnly: v.optional(v.boolean()),
   },
   async handler(ctx, args) {
     const hasAccess = await hasAccessToOrg(ctx, args.orgId)
@@ -103,6 +104,12 @@ export const getFiles = query({
       )
     }
 
+    if (args.deletedOnly) {
+      files = files.filter((file) => file.shouldDelete)
+    } else {
+      files = files.filter((file) => !file.shouldDelete)
+    }
+
     return files
   },
 })
@@ -124,7 +131,9 @@ export const deleteFile = mutation({
       throw new ConvexError("you have no admin access to delete")
     }
 
-    await ctx.db.delete(args.fileId)
+    await ctx.db.patch(args.fileId, {
+      shouldDelete: true,
+    })
   },
 })
 
