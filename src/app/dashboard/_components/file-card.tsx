@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  FileIcon,
   FileTextIcon,
   GanttChartIcon,
   ImageIcon,
@@ -34,12 +35,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ReactNode, useState } from "react"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api.js"
 import { useToast } from "@/components/ui/use-toast"
 import Image from "next/image.js"
 import { Protect } from "@clerk/nextjs"
+import { format, formatDistance, formatRelative, subDays } from "date-fns"
 
 function FileCardActions({
   file,
@@ -103,6 +106,15 @@ function FileCardActions({
               </div>
             )}
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              window.open(getFileUrl(file.fileId), "_blank")
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <FileIcon /> Download
+          </DropdownMenuItem>
+
           <Protect role="org:admin" fallback={<></>}>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -145,6 +157,10 @@ export function FileCard({
   file: Doc<"files">
   favorites: Doc<"favorites">[]
 }) {
+  const userProfile = useQuery(api.users.getUserProfile, {
+    userId: file.userId,
+  })
+
   const typesIcons = {
     image: <ImageIcon />,
     pdf: <FileTextIcon />,
@@ -176,14 +192,18 @@ export function FileCard({
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button
-          onClick={() => {
-            window.open(getFileUrl(file.fileId), "_blank")
-          }}
-        >
-          Download
-        </Button>
+      <CardFooter className="flex justify-between">
+        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
+          <Avatar className="w-6 h-6">
+            <AvatarImage className="object-cover" src={userProfile?.image} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          {userProfile?.name}
+        </div>
+        <div className="text-xs text-gray-700">
+          Uploaded {" "}
+          {formatRelative((new Date(file._creationTime)), new Date())}
+        </div>
       </CardFooter>
     </Card>
   )
