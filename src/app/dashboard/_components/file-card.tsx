@@ -92,6 +92,14 @@ function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
+              window.open(getFileUrl(file.fileId), "_blank")
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <FileIcon className="w-4 h-4" /> Download
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
               toggleFavorite({ fileId: file._id })
             }}
             className="flex gap-1 items-center cursor-pointer"
@@ -106,15 +114,6 @@ function FileCardActions({
               </div>
             )}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              window.open(getFileUrl(file.fileId), "_blank")
-            }}
-            className="flex gap-1 items-center cursor-pointer"
-          >
-            <FileIcon /> Download
-          </DropdownMenuItem>
-
           <Protect role="org:admin" fallback={<></>}>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -172,7 +171,7 @@ export function FileCard({
   return (
     <Card>
       <CardHeader className="relative">
-        <CardTitle className="flex gap-2">
+        <CardTitle className="flex gap-2 text-base font-normal">
           <div className="flex justify-center">{typesIcons[file.type]}</div>
           {file.name}
         </CardTitle>
@@ -201,8 +200,7 @@ export function FileCard({
           {userProfile?.name}
         </div>
         <div className="text-xs text-gray-700">
-          Uploaded {" "}
-          {formatRelative((new Date(file._creationTime)), new Date())}
+          Uploaded {formatRelative(new Date(file._creationTime), new Date())}
         </div>
       </CardFooter>
     </Card>
