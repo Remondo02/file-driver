@@ -11,6 +11,8 @@ import { SearchBar } from "./search-bar"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link.js"
+import { DataTable } from "./file-table"
+import { columns } from "./columns"
 
 function Placeholder() {
   return (
@@ -32,7 +34,7 @@ function Placeholder() {
 export function FileBrowser({
   title,
   favoritesOnly,
-  deletedOnly
+  deletedOnly,
 }: {
   title: string
   favoritesOnly?: boolean
@@ -58,6 +60,14 @@ export function FileBrowser({
   )
   const isLoading = files === undefined
 
+  const modifiedFiles =
+    files?.map((file) => ({
+      ...file,
+      isFavorited: (favorites ?? []).some(
+        (favorite) => favorite.fileId === file._id
+      ),
+    })) ?? []
+
   return (
     <div>
       {isLoading && (
@@ -77,15 +87,11 @@ export function FileBrowser({
 
           {files.length === 0 && <Placeholder />}
 
+          <DataTable columns={columns} data={modifiedFiles} />
+
           <div className="grid grid-cols-3 gap-4">
-            {files?.map((file) => {
-              return (
-                <FileCard
-                  favorites={favorites ?? []}
-                  key={file._id}
-                  file={file}
-                />
-              )
+            {modifiedFiles?.map((file) => {
+              return <FileCard key={file._id} file={file} />
             })}
           </div>
         </>
