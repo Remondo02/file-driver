@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen font-sans antialiased`}>
+      <body className={`${inter.className} min-h-screen font-sans antialiased flex flex-col`}>
         <div className="relative flex min-h-screen flex-col">
           <ConvexClientProvider>
             <ThemeProvider
