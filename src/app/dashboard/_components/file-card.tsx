@@ -13,12 +13,12 @@ import { useQuery } from "convex/react"
 import { api } from "../../../../convex/_generated/api.js"
 import Image from "next/image.js"
 import { formatRelative } from "date-fns"
-import { FileCardActions, getFileUrl } from "./file-actions"
+import { FileCardActions } from "./file-actions"
 
 export function FileCard({
   file,
 }: {
-  file: Doc<"files"> & { isFavorited: boolean }
+  file: Doc<"files"> & { isFavorited: boolean; url: string | null };
 }) {
   const userProfile = useQuery(api.users.getUserProfile, {
     userId: file.userId,
@@ -42,13 +42,8 @@ export function FileCard({
         </div>
       </CardHeader>
       <CardContent className="h-[200px] flex justify-center items-center">
-        {file.type === "image" && (
-          <Image
-            alt={file.name}
-            width="100"
-            height="100"
-            src={getFileUrl(file.fileId)}
-          />
+        {file.type === "image" && file.url && (
+          <Image alt={file.name} width="200" height="100" src={file.url} />
         )}
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
