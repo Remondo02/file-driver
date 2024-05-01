@@ -1,4 +1,4 @@
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/app/mode-toggle"
 import { Button } from "@/components/ui/button"
 import {
   OrganizationSwitcher,

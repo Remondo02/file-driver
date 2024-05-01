@@ -5,7 +5,7 @@ import ConvexClientProvider from "./ConvexClientProvider"
 import { Header } from "./header"
 import { Toaster } from "@/components/ui/toaster"
 import { Footer } from "./footer"
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/app/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
