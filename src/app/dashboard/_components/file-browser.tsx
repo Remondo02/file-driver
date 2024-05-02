@@ -1,28 +1,30 @@
-"use client"
-import { useOrganization, useUser } from "@clerk/nextjs"
-import { useQuery } from "convex/react"
-import { api } from "../../../../convex/_generated/api"
-import { UploadButton } from "./upload-button"
-import { FileCard } from "./file-card"
-import Image from "next/image.js"
-import { GridIcon, Loader2, RowsIcon } from "lucide-react"
-import { SearchBar } from "./search-bar"
-import { useState } from "react"
-import { DataTable } from "./file-table"
-import { columns } from "./columns"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+'use client'
+
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Doc } from "../../../../convex/_generated/dataModel.js"
+} from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useOrganization, useUser } from '@clerk/nextjs'
+import { useQuery } from 'convex/react'
+import { GridIcon, Loader2, RowsIcon } from 'lucide-react'
+import Image from 'next/image.js'
+import { useState } from 'react'
+
+import { api } from '../../../../convex/_generated/api'
+import { Doc } from '../../../../convex/_generated/dataModel.js'
+import { columns } from './columns'
+import { FileCard } from './file-card'
+import { DataTable } from './file-table'
+import { SearchBar } from './search-bar'
+import { UploadButton } from './upload-button'
 
 function Placeholder() {
   return (
-    <div className="flex flex-col gap-8 w-full items-center mt-24">
+    <div className="mt-24 flex w-full flex-col items-center gap-8">
       <Image
         alt="an image of a picture and directory icon"
         width="300"
@@ -48,8 +50,8 @@ export function FileBrowser({
 }) {
   const organization = useOrganization()
   const user = useUser()
-  const [query, setQuery] = useState("")
-  const [type, setType] = useState<Doc<"files">["type"] | "all">("all")
+  const [query, setQuery] = useState('')
+  const [type, setType] = useState<Doc<'files'>['type'] | 'all'>('all')
 
   let orgId: string | undefined = undefined
   if (organization.isLoaded && user.isLoaded) {
@@ -58,7 +60,7 @@ export function FileBrowser({
 
   const favorites = useQuery(
     api.files.getAllFavorites,
-    orgId ? { orgId } : "skip"
+    orgId ? { orgId } : 'skip',
   )
 
   const files = useQuery(
@@ -66,12 +68,12 @@ export function FileBrowser({
     orgId
       ? {
           orgId,
-          type: type === "all" ? undefined : type,
+          type: type === 'all' ? undefined : type,
           query,
           favorites: favoritesOnly,
           deletedOnly,
         }
-      : "skip"
+      : 'skip',
   )
   const isLoading = files === undefined
 
@@ -79,32 +81,32 @@ export function FileBrowser({
     files?.map((file) => ({
       ...file,
       isFavorited: (favorites ?? []).some(
-        (favorite) => favorite.fileId === file._id
+        (favorite) => favorite.fileId === file._id,
       ),
     })) ?? []
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <h1 className="text-4xl font-bold">{title}</h1>
         <SearchBar query={query} setQuery={setQuery} />
         <UploadButton />
       </div>
 
       <Tabs defaultValue="grid">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <TabsList className="mb-4">
-            <TabsTrigger value="grid" className="flex gap-2 items-center">
+            <TabsTrigger value="grid" className="flex items-center gap-2">
               <GridIcon />
               Grid
             </TabsTrigger>
-            <TabsTrigger value="table" className="flex gap-2 items-center">
-              {" "}
+            <TabsTrigger value="table" className="flex items-center gap-2">
+              {' '}
               <RowsIcon />
               Table
             </TabsTrigger>
           </TabsList>
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <label htmlFor="type-select">Type Filter</label>
             <Select
               value={type}
@@ -115,7 +117,7 @@ export function FileBrowser({
               <SelectTrigger
                 id="type-select"
                 className="w-[180px]"
-                defaultValue={"all"}
+                defaultValue={'all'}
               >
                 <SelectValue placeholder="All" />
               </SelectTrigger>
@@ -130,7 +132,7 @@ export function FileBrowser({
         </div>
 
         {isLoading && (
-          <div className="flex flex-col gap-8 w-full items-center mt-24">
+          <div className="mt-24 flex w-full flex-col items-center gap-8">
             <Loader2 className="h-32 w-32 animate-spin text-primary" />
             <div className="text-2xl text-primary">Loading your files...</div>
           </div>

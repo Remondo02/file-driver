@@ -1,20 +1,21 @@
-"use client"
+'use client'
 
-import { ColumnDef } from "@tanstack/react-table"
-import { Doc, Id } from "../../../../convex/_generated/dataModel"
-import { formatRelative } from "date-fns"
-import { useQuery } from "convex/react"
-import { api } from "../../../../convex/_generated/api"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { FileCardActions } from "./file-actions"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ColumnDef } from '@tanstack/react-table'
+import { useQuery } from 'convex/react'
+import { formatRelative } from 'date-fns'
 
-function UserCell({ userId }: { userId: Id<"users"> }) {
+import { api } from '../../../../convex/_generated/api'
+import { Doc, Id } from '../../../../convex/_generated/dataModel'
+import { FileCardActions } from './file-actions'
+
+function UserCell({ userId }: { userId: Id<'users'> }) {
   const userProfile = useQuery(api.users.getUserProfile, {
     userId: userId,
   })
   return (
-    <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
-      <Avatar className="w-6 h-6">
+    <div className="flex w-40 items-center gap-2 text-xs text-gray-700">
+      <Avatar className="h-6 w-6">
         <AvatarImage className="object-cover" src={userProfile?.image} />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
@@ -24,24 +25,24 @@ function UserCell({ userId }: { userId: Id<"users"> }) {
 }
 
 export const columns: ColumnDef<
-  Doc<"files"> & { url: string; isFavorited: boolean }
+  Doc<'files'> & { url: string; isFavorited: boolean }
 >[] = [
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: 'name',
+    header: 'Name',
   },
   {
-    accessorKey: "type",
-    header: "Type",
+    accessorKey: 'type',
+    header: 'Type',
   },
   {
-    header: "User",
+    header: 'User',
     cell: ({ row }) => {
       return <UserCell userId={row.original.userId} />
     },
   },
   {
-    header: "Uploaded On",
+    header: 'Uploaded On',
     cell: ({ row }) => {
       return (
         <div>
@@ -51,7 +52,7 @@ export const columns: ColumnDef<
     },
   },
   {
-    header: "Actions",
+    header: 'Actions',
     cell: ({ row }) => {
       return (
         <div>

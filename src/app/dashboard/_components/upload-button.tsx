@@ -1,9 +1,6 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { useOrganization, useUser } from "@clerk/nextjs"
-import { useMutation } from "convex/react"
-import { api } from "../../../../convex/_generated/api"
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -11,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -19,21 +16,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import { useOrganization, useUser } from '@clerk/nextjs'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from 'convex/react'
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { useState } from "react"
-import { Loader2 } from "lucide-react"
-import { Doc } from "../../../../convex/_generated/dataModel.js"
+import { api } from '../../../../convex/_generated/api'
+import { Doc } from '../../../../convex/_generated/dataModel.js'
 
 const formSchema = z.object({
   title: z.string().min(2).max(150),
   file: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
+    .custom<FileList>((val) => val instanceof FileList, 'Required')
     .refine((files) => files.length > 0, `Required`),
 })
 
@@ -46,12 +46,12 @@ export function UploadButton() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
+      title: '',
       file: undefined,
     },
   })
 
-  const fileRef = form.register("file")
+  const fileRef = form.register('file')
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!orgId) return
@@ -60,18 +60,18 @@ export function UploadButton() {
     const fileType = values.file[0].type
 
     const result = await fetch(postUrl, {
-      method: "POST",
-      headers: { "Content-Type": fileType },
+      method: 'POST',
+      headers: { 'Content-Type': fileType },
       body: values.file[0],
     })
 
     const { storageId } = await result.json()
 
     const types = {
-      "image/png": "image",
-      "application/pdf": "pdf",
-      "text/csv": "csv",
-    } as Record<string, Doc<"files">["type"]>
+      'image/png': 'image',
+      'application/pdf': 'pdf',
+      'text/csv': 'csv',
+    } as Record<string, Doc<'files'>['type']>
 
     try {
       await createFile({
@@ -86,15 +86,15 @@ export function UploadButton() {
       setIsFileDialogOpen(false)
 
       toast({
-        variant: "success",
-        title: "File Uploaded",
-        description: "Now everyone can view your file",
+        variant: 'success',
+        title: 'File Uploaded',
+        description: 'Now everyone can view your file',
       })
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Something wen wrong",
-        description: "Your file could not be uploaded",
+        variant: 'destructive',
+        title: 'Something wen wrong',
+        description: 'Your file could not be uploaded',
       })
     }
   }

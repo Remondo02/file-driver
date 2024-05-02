@@ -1,19 +1,3 @@
-import { Doc, Id } from "../../../../convex/_generated/dataModel.js"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  FileIcon,
-  MoreVertical,
-  StarHalf,
-  StarIcon,
-  TrashIcon,
-  UndoIcon,
-} from "lucide-react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,18 +7,35 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
-import { useState } from "react"
-import { useMutation, useQuery } from "convex/react"
-import { api } from "../../../../convex/_generated/api.js"
-import { useToast } from "@/components/ui/use-toast"
-import { Protect } from "@clerk/nextjs"
+} from '@/components/ui/alert-dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { useToast } from '@/components/ui/use-toast'
+import { Protect } from '@clerk/nextjs'
+import { useMutation, useQuery } from 'convex/react'
+import {
+  FileIcon,
+  MoreVertical,
+  StarHalf,
+  StarIcon,
+  TrashIcon,
+  UndoIcon,
+} from 'lucide-react'
+import { useState } from 'react'
+
+import { api } from '../../../../convex/_generated/api.js'
+import { Doc, Id } from '../../../../convex/_generated/dataModel.js'
 
 export function FileCardActions({
   file,
   isFavorited,
 }: {
-  file: Doc<"files"> & { url: string | null };
+  file: Doc<'files'> & { url: string | null }
   isFavorited: boolean
 }) {
   const deleteFile = useMutation(api.files.deleteFile)
@@ -60,9 +61,9 @@ export function FileCardActions({
               onClick={async () => {
                 await deleteFile({ fileId: file._id })
                 toast({
-                  variant: "default",
-                  title: "File marked for deletion",
-                  description: "Your file will be deleted soon",
+                  variant: 'default',
+                  title: 'File marked for deletion',
+                  description: 'Your file will be deleted soon',
                 })
               }}
             >
@@ -79,34 +80,39 @@ export function FileCardActions({
         <DropdownMenuContent>
           <DropdownMenuItem
             onClick={() => {
-              if (!file.url) return;
-              window.open(file.url, "_blank");
+              if (!file.url) return
+              window.open(file.url, '_blank')
             }}
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex cursor-pointer items-center gap-1"
           >
-            <FileIcon className="w-4 h-4" /> Download
+            <FileIcon className="h-4 w-4" /> Download
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               toggleFavorite({ fileId: file._id })
             }}
-            className="flex gap-1 items-center cursor-pointer"
+            className="flex cursor-pointer items-center gap-1"
           >
             {isFavorited ? (
-              <div className="flex gap-1 items-center">
-                <StarIcon className="w-4 h-4" /> Unfavorite
+              <div className="flex items-center gap-1">
+                <StarIcon className="h-4 w-4" /> Unfavorite
               </div>
             ) : (
-              <div className="flex gap-1 items-center">
-                <StarHalf className="w-4 h-4" /> Favorite
+              <div className="flex items-center gap-1">
+                <StarHalf className="h-4 w-4" /> Favorite
               </div>
             )}
           </DropdownMenuItem>
-          <Protect condition={(check) => {
-            return check({
-                role: "org:admin"
-            }) || file.userId === me?._id
-          }} fallback={<></>}>
+          <Protect
+            condition={(check) => {
+              return (
+                check({
+                  role: 'org:admin',
+                }) || file.userId === me?._id
+              )
+            }}
+            fallback={<></>}
+          >
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => {
@@ -118,15 +124,15 @@ export function FileCardActions({
                   setIsConfirmeOpen(true)
                 }
               }}
-              className="flex gap-1 items-center cursor-pointer"
+              className="flex cursor-pointer items-center gap-1"
             >
               {file.shouldDelete ? (
-                <div className="flex gap-1 text-green-500 items-center cursor-pointer">
-                  <UndoIcon className="w-4 h-4" /> Restore
+                <div className="flex cursor-pointer items-center gap-1 text-green-500">
+                  <UndoIcon className="h-4 w-4" /> Restore
                 </div>
               ) : (
-                <div className="flex gap-1 text-red-500 items-center cursor-pointer">
-                  <TrashIcon className="w-4 h-4" /> Delete
+                <div className="flex cursor-pointer items-center gap-1 text-red-500">
+                  <TrashIcon className="h-4 w-4" /> Delete
                 </div>
               )}
             </DropdownMenuItem>
@@ -137,6 +143,6 @@ export function FileCardActions({
   )
 }
 
-export function getFileUrl(fileId: Id<"_storage">): string {
+export function getFileUrl(fileId: Id<'_storage'>): string {
   return `${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${fileId}`
 }
